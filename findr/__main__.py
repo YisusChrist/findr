@@ -1,12 +1,3 @@
-#!/usr/bin/env python3
-
-"""
-@file     findr
-@date     03/08/2023
-@version  1.1
-@author   Julio Cabria
-"""
-
 from os import listdir
 from os import getcwd
 from os.path import isfile as path_isfile
