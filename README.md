@@ -167,7 +167,7 @@ Before you participate in our delightful community, please read the [code of con
 
 I'm far from being an expert and suspect there are many ways to improve – if you have ideas on how to make the configuration easier to maintain (and faster), don't hesitate to fork and send pull requests!
 
-We also need people to test out pull requests. So take a look through [the open issues](../issues) and help where you can.
+We also need people to test out pull requests. So take a look through [the open issues](https://github.com/YisusChrist/findr/issues) and help where you can.
 
 See [Contributing](.github/CONTRIBUTING.md) for more details.
 
@@ -176,3 +176,6 @@ See [Contributing](.github/CONTRIBUTING.md) for more details.
 `findr` is released under the [GPL-2.0 license](https://opensource.org/licenses/GPL-2.0).
 
 # Credits
+
+> [!NOTE]
+> Credits to [Julynx](https://github.com/Julynx) for creating the original [project](https://github.com/Julynx/findr). I only make improvements in his code based on my preferences to customize it. All the ideas and the base of the script are his.
