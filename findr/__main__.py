@@ -10,8 +10,13 @@ from rich import print
 
 from findr.cli import exit_session, get_parsed_args, print_parser_help
 from findr.consts import EXIT_FAILURE, EXIT_SUCCESS
-from findr.search import (print_match_in_file, print_match_in_filename,
-                          rec_find, search_in_file, search_in_filename)
+from findr.search import (
+    print_match_in_file,
+    print_match_in_filename,
+    rec_find,
+    search_in_file,
+    search_in_filename,
+)
 
 
 def main() -> None:
@@ -32,7 +37,7 @@ def main() -> None:
         print_parser_help()
         exit_session(EXIT_SUCCESS)
 
-    search_dir: Path = Path.cwd()
+    search_dir: Path = Path(args.path).resolve()
 
     print()
 

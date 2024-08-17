@@ -39,6 +39,13 @@ def get_parsed_args() -> Namespace:
         type=str,
         help="The string to search for.",
     )
+    # path argument
+    default_path: Path = Path.cwd()
+    g_main.add_argument(
+        "--path",
+        default=default_path,
+        help=f"the path to search under (default: {default_path})",
+    )
     # mode argument
     default_mode: str = "contents"
     g_main.add_argument(
