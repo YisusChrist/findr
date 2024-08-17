@@ -106,8 +106,6 @@ def get_parsed_args() -> Namespace:
 
 def print_parser_help() -> None:
     """Print the help message for the parser."""
-    global parser
-
     parser.print_help()
 
 
