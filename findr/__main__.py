@@ -1,5 +1,7 @@
 """Main module for the project."""
 
+from argparse import Namespace
+import time
 from contextlib import suppress
 from pathlib import Path
 from sys import exit as sys_exit
@@ -8,7 +10,8 @@ from typing import Callable
 from argsdict import args  # type: ignore
 from rich import print
 
-HIGHLIGHT_MAX_LEN = 40
+from findr.cli import get_parsed_args, print_parser_help
+from findr.consts import HIGHLIGHT_MAX_LEN
 
 
 def readlines(file: str | Path) -> list[str]:
@@ -50,7 +53,7 @@ def print_match_in_filename(_: str, buffer: str) -> None:
 def rec_find(  # pylint: disable=too-many-arguments
     path: Path,
     key: str,
-    max_depth: int,
+    max_depth: int = 999,
     *,
     search_fun: Callable[[Path, str], tuple[str, bool]],
     print_fun: Callable[[str, str], None],
@@ -64,7 +67,7 @@ def rec_find(  # pylint: disable=too-many-arguments
     Args:
         path (Path): File or directory name
         key (str): Key to search
-        max_depth (int): Maximum depth to search
+        max_depth (int, optional): Maximum depth to search (default: 999)
         search_fun (Callable[[Path, str], tuple[str, bool]]): Function to search for key
         print_fun (Callable[[str, str], None]): Function to print results
         no_dotfiles (bool, optional): Skip dotfiles (default: False)
@@ -163,37 +166,20 @@ def main() -> int:
     Returns:
         int: 0 if successful, 1 if cancelled
     """
-    arg = args(["key"])
+    args: Namespace = get_parsed_args()
 
-    query = arg.get("key", None)
-    mode = arg.get("--mode", "contents")
-    depth = arg.get("--max-depth", 999)
-    no_dotfiles = bool(arg.get("--skip-dotfiles", False))
-
-    if not query or "--help" in arg:
-        print("\nUsage: findr [key] [flags]")
-        print("Flags:")
-        print("--mode=contents|filenames")
-        print("--max-depth=999")
-        print("--skip-dotfiles=False\n")
-        return 0
-
-    if mode == "contents":
+    if args.mode == "contents":
         print("\n[green]Searching contents...[/]")
         search_fun: Callable[[Path, str], tuple[str, bool]] = search_in_file
         print_fun: Callable[[str, str], None] = print_match_in_file
 
-    elif mode == "filenames":
+    elif args.mode == "filenames":
         print("\n[green]Searching filenames...[/]")
         search_fun = search_in_filename
         print_fun = print_match_in_filename
 
     else:
-        print("\nUsage: findr [key] [flags]")
-        print("Flags:")
-        print("--mode=contents|filenames")
-        print("--max-depth=999")
-        print("--skip-dotfiles=False\n")
+        print_parser_help()
         return 0
 
     current_dir = Path.cwd()
@@ -201,18 +187,21 @@ def main() -> int:
     print()
 
     try:
+        start_time: float = time.time()
         for fname in current_dir.iterdir():
             with suppress(Exception):
                 rec_find(
-                    fname,
-                    query,
-                    max_depth=int(depth),
+                    path=fname,
+                    key=args.key,
+                    max_depth=args.max_depth,
                     search_fun=search_fun,
                     print_fun=print_fun,
-                    no_dotfiles=no_dotfiles,
+                    no_dotfiles=args.skip_dotfiles,
                 )
+        end_time: float = time.time()
+        print(f"\n[green]Search completed in {end_time - start_time:.5f} seconds[/]")
 
-        if mode == "filenames":
+        if args.mode == "filenames":
             print()
 
         sys_exit(0)
