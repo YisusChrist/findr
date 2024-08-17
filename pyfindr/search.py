@@ -6,7 +6,7 @@ from typing import Callable
 
 from rich import print
 
-from findr.consts import HIGHLIGHT_MAX_LEN
+from pyfindr.consts import HIGHLIGHT_MAX_LEN
 
 
 def readlines(file: str | Path) -> list[str]:

@@ -7,9 +7,9 @@ from typing import NoReturn
 
 from rich import print
 
-from findr.consts import EXIT_FAILURE, PACKAGE
-from findr.consts import __desc__ as DESC
-from findr.consts import __version__ as VERSION
+from pyfindr.consts import EXIT_FAILURE, PACKAGE
+from pyfindr.consts import __desc__ as DESC
+from pyfindr.consts import __version__ as VERSION
 
 
 parser: ArgumentParser

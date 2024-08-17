@@ -8,9 +8,9 @@ from typing import Callable
 
 from rich import print
 
-from findr.cli import exit_session, get_parsed_args, print_parser_help
-from findr.consts import EXIT_FAILURE, EXIT_SUCCESS
-from findr.search import (
+from pyfindr.cli import exit_session, get_parsed_args, print_parser_help
+from pyfindr.consts import EXIT_FAILURE, EXIT_SUCCESS
+from pyfindr.search import (
     print_match_in_file,
     print_match_in_filename,
     rec_find,

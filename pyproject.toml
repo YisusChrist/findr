@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "findr"
+name = "pyfindr"
 version = "1.0.0"
 description = "Recursively search files"
 license = "GPL-2.0-only"
