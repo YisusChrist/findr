@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "findr"
-version = "0.3"
+version = "1.0.0"
 description = "Recursively search files"
 license = "GPL-2.0-only"
 authors = [
