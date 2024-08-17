@@ -12,7 +12,6 @@ repository = "https://github.com/Julynx/argsdict"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-argsdict = "^1.0.0"
 rich = "^13.7.1"
 
 [tool.poetry.group.dev.dependencies]
