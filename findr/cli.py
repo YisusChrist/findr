@@ -1,8 +1,13 @@
 """Command-line interface for the project."""
 
+from pathlib import Path
+import sys
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
+from typing import NoReturn
 
-from findr.consts import PACKAGE
+from rich import print
+
+from findr.consts import EXIT_FAILURE, PACKAGE
 from findr.consts import __desc__ as DESC
 from findr.consts import __version__ as VERSION
 
@@ -35,19 +40,22 @@ def get_parsed_args() -> Namespace:
         help="The string to search for.",
     )
     # mode argument
+    default_mode: str = "contents"
     g_main.add_argument(
         "--mode",
         type=str,
         choices=["contents", "filenames"],
-        default="contents",
-        help="The search mode. Default is 'contents'.",
+        default=default_mode,
+        help=f"The search mode. Default is '{default_mode}'.",
     )
+    # max-depth argument
     g_main.add_argument(
         "--max-depth",
         type=int,
         default=999,
         help="maximum depth for recursive search",
     )
+    # skip-dotfiles argument
     g_main.add_argument(
         "--skip-dotfiles",
         action="store_true",
@@ -90,14 +98,30 @@ def get_parsed_args() -> Namespace:
 
 
 def print_parser_help() -> None:
+    """Print the help message for the parser."""
     global parser
 
-    """
-    Usage: findr [key] [flags]
-        Flags:
-        --mode=contents|filenames
-        --max-depth=999
-        --skip-dotfiles=False
-    """
-
     parser.print_help()
+
+
+def exit_session(exit_value: int) -> NoReturn:
+    """
+    Exit the program with the given exit value.
+
+    Args:
+        exit_value (int): The POSIX exit value to exit with.
+
+    Returns:
+        NoReturn: This function does not return anything
+    """
+    # Check if the exit_value is a valid POSIX exit value
+    if not 0 <= exit_value <= 255:
+        exit_value = EXIT_FAILURE
+
+    if exit_value == EXIT_FAILURE:
+        print(
+            "\n[red]There were errors during the execution of the script.[/]",
+        )
+
+    # Exit the program with the given exit value
+    sys.exit(exit_value)
