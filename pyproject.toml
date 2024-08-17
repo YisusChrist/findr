@@ -21,7 +21,7 @@ bandit = "^1.7.9"
 pydoctest = "^0.2.0"
 
 [tool.poetry.scripts]
-findr = "findr.__main__:main"
+findr = "pyfindr.__main__:main"
 
 [tool.pylint]
 disable = [
