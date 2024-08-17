@@ -6,6 +6,7 @@ from os.path import isdir as path_isdir
 from os.path import isfile as path_isfile
 from os.path import join as path_join
 from sys import exit as sys_exit
+from typing import Callable
 
 from argsdict import args  # type: ignore
 
@@ -17,7 +18,7 @@ RED = "\033[91m"
 RESET = "\033[0m"
 
 
-def readlines(filename):
+def readlines(filename: str) -> list[str]:
     """
     Reads a file and returns its contents as a list of lines.
 
@@ -25,17 +26,13 @@ def readlines(filename):
         filename (str): The name of the file to read.
 
     Returns:
-        str: The contents of the file.
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        PermissionError: If the file cannot be read.
+        list[str]: The contents of the file.
     """
     with open(filename, "r", encoding="utf-8") as file:
         return file.readlines()
 
 
-def print_match_in_file(fname, buffer):
+def print_match_in_file(fname: str, buffer: str) -> None:
     """
     Used to print a match found in a file.
 
@@ -46,7 +43,7 @@ def print_match_in_file(fname, buffer):
     print(f"{YELLOW}{fname}{RESET}\n{buffer}", flush=True)
 
 
-def print_match_in_filename(_, buffer):
+def print_match_in_filename(_: str, buffer: str) -> None:
     """
     Used to print a match found in a filename.
 
@@ -57,7 +54,15 @@ def print_match_in_filename(_, buffer):
     print(buffer, flush=True)
 
 
-def rec_find(fname, key, max_depth, *, search_fun, print_fun, no_dotfiles):
+def rec_find(
+    fname: str,
+    key: str,
+    max_depth: int,
+    *,
+    search_fun: Callable[[str, str], tuple[str, bool]],
+    print_fun: Callable[[str, str], None],
+    no_dotfiles: bool = False,
+) -> None:
     """
     Recursively search for key in file or directory.
     Calls search_fun for each file or directory found and print_fun
@@ -67,8 +72,9 @@ def rec_find(fname, key, max_depth, *, search_fun, print_fun, no_dotfiles):
         fname (str): File or directory name
         key (str): Key to search
         max_depth (int): Maximum depth to search
-        search_fun (function): Function to search for key
-        print_fun (function): Function to print results
+        search_fun (Callable[[str, str], tuple[str, bool]]): Function to search for key
+        print_fun (Callable[[str, str], None]): Function to print results
+        no_dotfiles (bool, optional): Skip dotfiles (default: False)
     """
     if max_depth <= 0:
         return
@@ -94,18 +100,16 @@ def rec_find(fname, key, max_depth, *, search_fun, print_fun, no_dotfiles):
             )
 
 
-def search_in_filename(fname, key):
+def search_in_filename(fname: str, key: str) -> tuple[str, bool]:
     """
     Search for key in filename and return results
 
     Args:
         fname (str): File or directory name
         key (str): Key to search
-        _ (str): Buffer to store results (not used)
 
     Returns:
-        buffer (str): Buffer to store results
-        found (bool): True if key is found
+        tuple[str, bool]: Buffer to store results, True if key is found
     """
     if key not in fname:
         return "", False
@@ -120,7 +124,7 @@ def search_in_filename(fname, key):
     return buffer, True
 
 
-def search_in_file(fname, key):
+def search_in_file(fname: str, key: str) -> tuple[str, bool]:
     """
     Search for key in file and store results in buffer
 
@@ -129,8 +133,7 @@ def search_in_file(fname, key):
         key (str): Key to search
 
     Returns:
-        buffer (str): Buffer to store results
-        found (bool): True if key is found
+        tuple[str, bool]: Buffer to store results, True if key is found
     """
     buffer = []
     for line_num, line in enumerate(readlines(fname)):
@@ -161,6 +164,9 @@ def search_in_file(fname, key):
 def main() -> int:
     """
     Main function
+
+    Returns:
+        int: 0 if successful, 1 if cancelled
     """
     arg = args(["key"])
 
