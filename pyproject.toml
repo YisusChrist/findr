@@ -25,7 +25,7 @@ findr = "findr.__main__:main"
 
 [tool.pylint]
 disable = [
-  "W0622",  # Redefining built-in 'format' (redefined-builtin)
+    "W0622",  # Redefining built-in 'format' (redefined-builtin)
 ]
 
 [build-system]
