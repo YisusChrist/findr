@@ -13,6 +13,7 @@ repository = "https://github.com/Julynx/argsdict"
 [tool.poetry.dependencies]
 python = "^3.8"
 argsdict = "^1.0.0"
+rich = "^13.7.1"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.2.6"
@@ -22,6 +23,11 @@ pydoctest = "^0.2.0"
 
 [tool.poetry.scripts]
 findr = "findr.__main__:main"
+
+[tool.pylint]
+disable = [
+  "W0622",  # Redefining built-in 'format' (redefined-builtin)
+]
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,35 +1,28 @@
 """Main module for the project."""
 
 from contextlib import suppress
-from os import getcwd, listdir
-from os.path import isdir as path_isdir
-from os.path import isfile as path_isfile
-from os.path import join as path_join
+from pathlib import Path
 from sys import exit as sys_exit
 from typing import Callable
 
 from argsdict import args  # type: ignore
+from rich import print
 
 HIGHLIGHT_MAX_LEN = 40
-YELLOW = "\033[93m"
-GREEN = "\033[92m"
-BLUE = "\033[94m"
-RED = "\033[91m"
-RESET = "\033[0m"
 
 
-def readlines(filename: str) -> list[str]:
+def readlines(file: str | Path) -> list[str]:
     """
     Reads a file and returns its contents as a list of lines.
 
     Args:
-        filename (str): The name of the file to read.
+        file (str | Path): The name of the file to read.
 
     Returns:
         list[str]: The contents of the file.
     """
-    with open(filename, "r", encoding="utf-8") as file:
-        return file.readlines()
+    with open(file, "r", encoding="utf-8") as f:
+        return f.readlines()
 
 
 def print_match_in_file(fname: str, buffer: str) -> None:
@@ -40,7 +33,7 @@ def print_match_in_file(fname: str, buffer: str) -> None:
         fname (str): Name of file where match was found
         buffer (str): Buffer to print containing the match itself
     """
-    print(f"{YELLOW}{fname}{RESET}\n{buffer}", flush=True)
+    print(f"[yellow]{fname}[/]\n{buffer}", flush=True)
 
 
 def print_match_in_filename(_: str, buffer: str) -> None:
@@ -54,12 +47,12 @@ def print_match_in_filename(_: str, buffer: str) -> None:
     print(buffer, flush=True)
 
 
-def rec_find(
-    fname: str,
+def rec_find(  # pylint: disable=too-many-arguments
+    path: Path,
     key: str,
     max_depth: int,
     *,
-    search_fun: Callable[[str, str], tuple[str, bool]],
+    search_fun: Callable[[Path, str], tuple[str, bool]],
     print_fun: Callable[[str, str], None],
     no_dotfiles: bool = False,
 ) -> None:
@@ -69,30 +62,32 @@ def rec_find(
     for each match found.
 
     Args:
-        fname (str): File or directory name
+        path (Path): File or directory name
         key (str): Key to search
         max_depth (int): Maximum depth to search
-        search_fun (Callable[[str, str], tuple[str, bool]]): Function to search for key
+        search_fun (Callable[[Path, str], tuple[str, bool]]): Function to search for key
         print_fun (Callable[[str, str], None]): Function to print results
         no_dotfiles (bool, optional): Skip dotfiles (default: False)
     """
     if max_depth <= 0:
         return
 
-    if no_dotfiles and fname.split("/")[-1].startswith("."):
+    if no_dotfiles and path.name.startswith("."):
         return
 
-    if path_isfile(fname):
+    if path.is_file():
         with suppress(Exception):
-            buffer, found = search_fun(fname, key)
+            buffer, found = search_fun(path, key)
             if found:
-                print_fun(fname, buffer)
+                # Get the relative path
+                relative_path = path.relative_to(Path.cwd())
+                print_fun(str(relative_path), buffer)
 
-    elif path_isdir(fname):
-        for file in listdir(fname):
+    elif path.is_dir():
+        for file in path.iterdir():
             rec_find(
-                path_join(fname, file),
-                key,
+                path=file,
+                key=key,
                 max_depth=max_depth - 1,
                 search_fun=search_fun,
                 print_fun=print_fun,
@@ -100,56 +95,56 @@ def rec_find(
             )
 
 
-def search_in_filename(fname: str, key: str) -> tuple[str, bool]:
+def search_in_filename(path: Path, key: str) -> tuple[str, bool]:
     """
     Search for key in filename and return results
 
     Args:
-        fname (str): File or directory name
+        path (Path): File or directory name
         key (str): Key to search
 
     Returns:
         tuple[str, bool]: Buffer to store results, True if key is found
     """
+    fname: str = path.name
     if key not in fname:
         return "", False
 
     start_idx = fname.index(key)
     end_idx = start_idx + len(key)
     buffer = (
-        f"{fname[:start_idx]}{GREEN}{fname[start_idx:end_idx]}"
-        f"{RESET}{fname[end_idx:]}"
+        f"{fname[:start_idx]}[green]{fname[start_idx:end_idx]}" f"[/]{fname[end_idx:]}"
     )
 
     return buffer, True
 
 
-def search_in_file(fname: str, key: str) -> tuple[str, bool]:
+def search_in_file(path: Path, key: str) -> tuple[str, bool]:
     """
     Search for key in file and store results in buffer
 
     Args:
-        fname (str): File or directory name
+        path (Path): File or directory name
         key (str): Key to search
 
     Returns:
         tuple[str, bool]: Buffer to store results, True if key is found
     """
     buffer = []
-    for line_num, line in enumerate(readlines(fname)):
+    for line_num, line in enumerate(readlines(path)):
 
         if key not in line:
             continue
 
-        key_text = f"{GREEN}{key}{RESET}"
+        key_text = f"[green]{key}[/]"
         higlight = line.strip().replace(key, key_text)
 
         if higlight.index(key) > 20:
             higlight = higlight[higlight.index(key) - 20 :]
 
         location_text = (
-            f"{BLUE}Line {line_num + 1}, "
-            f"Column {line.find(key) + 1}:{RESET} "
+            f"[blue]Line {line_num + 1}, "
+            f"Column {line.find(key) + 1}:[/] "
             f"{higlight[:HIGHLIGHT_MAX_LEN]}"
         )
 
@@ -184,12 +179,12 @@ def main() -> int:
         return 0
 
     if mode == "contents":
-        print(f"\n{GREEN}Searching contents...{RESET}")
-        search_fun = search_in_file
-        print_fun = print_match_in_file
+        print("\n[green]Searching contents...[/]")
+        search_fun: Callable[[Path, str], tuple[str, bool]] = search_in_file
+        print_fun: Callable[[str, str], None] = print_match_in_file
 
     elif mode == "filenames":
-        print(f"\n{GREEN}Searching filenames...{RESET}")
+        print("\n[green]Searching filenames...[/]")
         search_fun = search_in_filename
         print_fun = print_match_in_filename
 
@@ -201,12 +196,12 @@ def main() -> int:
         print("--skip-dotfiles=False\n")
         return 0
 
-    files = listdir(getcwd())
+    current_dir = Path.cwd()
 
     print()
 
     try:
-        for fname in files:
+        for fname in current_dir.iterdir():
             with suppress(Exception):
                 rec_find(
                     fname,
@@ -223,7 +218,7 @@ def main() -> int:
         sys_exit(0)
 
     except KeyboardInterrupt:
-        print(f"\n{RED}Cancelled{RESET}\n")
+        print("\n[red]Cancelled[/]\n")
 
         sys_exit(1)
 
