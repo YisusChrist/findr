@@ -4,8 +4,8 @@ contact_links:
     url: https://github.com/YisusChrist/.github/blob/main/CONTRIBUTING.md
     about: Guidelines for how to report an issue.
   - name: Support
-    url: ../discussions
+    url: /discussions
     about: Ask the community for support.
   - name: Documentation
-    url: ../wiki
+    url: https://github.com/YisusChrist/findr/wiki
     about: Many questions might be already answered here.
