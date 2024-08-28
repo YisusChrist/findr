@@ -211,13 +211,13 @@ type = ["mypy (>=1.8)"]
 
 [[package]]
 name = "pydoctest"
-version = "0.2.0"
+version = "0.2.1"
 description = "Test if doctype types match signatures"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pydoctest-0.2.0-py3-none-any.whl", hash = "sha256:ee150cb0c2546c1785cc2c4a7ddab2f81fe9948042e1c9a94877bc601ba897d8"},
-    {file = "pydoctest-0.2.0.tar.gz", hash = "sha256:c10fc9423c86d5c86184fce07ada01bb6502dd3995d49ac442ecbc5ad279a650"},
+    {file = "pydoctest-0.2.1-py3-none-any.whl", hash = "sha256:8044448e3bc6471efb55443fc6a373e228f273635fb30f6f1ac97adde4be36cf"},
+    {file = "pydoctest-0.2.1.tar.gz", hash = "sha256:d68efde75ca17994d88801bd6081cff3459c9e8211d659dbd9068d50e21ed1f8"},
 ]
 
 [[package]]
