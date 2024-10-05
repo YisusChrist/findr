@@ -5,7 +5,7 @@
     <a href="https://github.com/YisusChrist/findr/forks">
         <img src="https://img.shields.io/github/forks/YisusChrist/findr?color=171b20&label=Forks%20%20&logo=git&labelColor=f1cf8a&logoColor=ffffff">&nbsp;&nbsp;&nbsp;
     </a>
-    <a href="https://github.com/YisusChrist/findr/">
+    <a href="https://github.com/YisusChrist/findr/stargazers">
         <img src="https://img.shields.io/github/stars/YisusChrist/findr?color=171b20&label=Stargazers&logo=octicon-star&labelColor=70a5eb">&nbsp;&nbsp;&nbsp;
     </a>
     <a href="https://github.com/YisusChrist/findr/actions">
@@ -163,13 +163,13 @@ Miscellaneous Options:
 
 ## How do I contribute to findr?
 
-Before you participate in our delightful community, please read the [code of conduct](.github/CODE_OF_CONDUCT.md).
+Before you participate in our delightful community, please read the [code of conduct](https://github.com/YisusChrist/.github/blob/main/CODE_OF_CONDUCT.md).
 
 I'm far from being an expert and suspect there are many ways to improve – if you have ideas on how to make the configuration easier to maintain (and faster), don't hesitate to fork and send pull requests!
 
 We also need people to test out pull requests. So take a look through [the open issues](https://github.com/YisusChrist/findr/issues) and help where you can.
 
-See [Contributing](.github/CONTRIBUTING.md) for more details.
+See [Contributing Guidelines](https://github.com/YisusChrist/.github/blob/main/CONTRIBUTING.md) for more details.
 
 # License
 
